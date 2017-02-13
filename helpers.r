@@ -1,8 +1,21 @@
+library(dplyr)
 
-
-lower48 = state.abb
-lower48 = state.abb[state.abb!="AK" & state.abb!="HI"]
-tornadoes = tornadoes[tornadoes$st %in% lower48, ]
-map("state", fill = FALSE, projection = "polyconic")
-tornadoes5 = tornadoes[tornadoes$fujita.estimate==5, ]
-points(mapproject(list(x=tornadoes5$slon, y=tornadoes5$slat)), cex=0.1)
+windowed.bar.chart <- function(df, filter.col, filter.val, size.left, size.right) {
+  idx <- which(df[, filter.col] == filter.val)
+  # range will be 4 above and below
+  idx.a <- idx - size.left
+  idx.b <- idx + size.right
+  # but if we go out of range on one side, we want more on the other so we keep the same total
+  num.rows <- nrow(df)
+  if (idx.a < 1) {
+    idx.b <- idx.b + (1 - idx.a)
+    idx.a <- 1
+  } else if (idx.b > num.rows) {
+    idx.a <- idx.a - (idx.b - num.rows)
+    idx.b <- num.rows
+  }
+  df <- df[idx.a:idx.b, ]
+  df <- df %>% mutate(damage.style = "blue")
+  df[idx - idx.a + 1, "damage.style"] <- "gold"
+  return(df)
+}
