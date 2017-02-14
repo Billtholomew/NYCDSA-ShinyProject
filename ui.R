@@ -40,8 +40,8 @@ dashboardPage(
                         checkboxGroupInput("map.mag", "Severity", 
                                            choices = c("F0", "F1", "F2", "F3", "F4", "F5"),
                                            selected = c("F0", "F1", "F2", "F3", "F4", "F5"), inline = TRUE),
-                        sliderInput("map.year", "Year Occured", min=1996, max=2015, step=1, value = c(2005, 2015))
-                        
+                        sliderInput("map.year", "Year Occured", min=1996, max=2015, step=1, value = c(1996, 2015)),
+                        actionButton("draw.map", "Render Map")
           )
           )
         )

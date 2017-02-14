@@ -51,11 +51,13 @@ function(input, output, session) {
   output$map <- renderLeaflet({
     # get only storms given user filter options
     
-    storm.paths <- storm.paths.pp %>% filter(state == input$state) 
-    storm.paths <- storm.paths %>% filter(mag %in% input$map.mag)
-    storm.paths <- storm.paths %>% filter(year >= input$map.year[1] & year <= input$map.year[2])
+    input$draw.map
     
-    storm.paths <- storm.paths %>% filter(length.check(slat, slon, elat, elon, len))
+    storm.paths <- isolate(storm.paths.pp %>% 
+                             filter(state == input$state) %>%
+                             filter(mag %in% input$map.mag) %>%
+                             filter(year >= input$map.year[1] & year <= input$map.year[2]) %>% 
+                             filter(length.check(slat, slon, elat, elon, len)))
     
     storm.map <- leaflet() %>% addTiles() 
     
